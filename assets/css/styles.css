@@ -4349,10 +4349,13 @@ button.animate-btn::after,
   align-items: end;
 }
 .section-hero-v1 .davies-large {
-  font-size: clamp(80px, 16vw, 200px);
-  line-height: clamp(96px, 14vw, 176px);
+  /* Wedesygn is longer than the original template name; keep the hero inside its column. */
+  font-size: clamp(56px, 10.5vw, 150px);
+  line-height: 0.9;
   font-weight: 550;
   letter-spacing: -0.06em;
+  white-space: nowrap;
+  max-width: 100%;
 }
 .section-hero-v1 .overlay {
   position: absolute;

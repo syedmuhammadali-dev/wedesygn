@@ -53,14 +53,16 @@ function buildMarkup(source: string) {
   const document = new DOMParser().parseFromString(`<body>${body}</body>`, 'text/html')
   const root = document.body
   root.querySelectorAll('script').forEach((element) => element.remove())
-  root.querySelectorAll('[src], [href]').forEach((element) => {
-    for (const attribute of ['src', 'href']) {
-      const value = element.getAttribute(attribute)
-      if (!value) continue
-      if (value.startsWith('assets/')) element.setAttribute(attribute, `/${value.slice(7)}`)
-      for (const [oldPath, newPath] of Object.entries(aliases)) {
-        if (value.startsWith(oldPath)) element.setAttribute(attribute, value.replace(oldPath, newPath))
+  root.querySelectorAll('*').forEach((element) => {
+    for (const attribute of Array.from(element.attributes)) {
+      let value = attribute.value
+      if (value.includes('assets/')) {
+        value = value.replace(/(^|[\s("'])assets\//g, '$1/')
       }
+      for (const [oldPath, newPath] of Object.entries(aliases)) {
+        if (value.startsWith(oldPath)) value = value.replace(oldPath, newPath)
+      }
+      if (value !== attribute.value) element.setAttribute(attribute.name, value)
     }
   })
   root.querySelectorAll('a[href="version-2.html"]').forEach((element) => element.closest('.effectFade')?.remove())
