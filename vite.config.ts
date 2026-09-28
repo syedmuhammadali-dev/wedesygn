@@ -1,0 +1,17 @@
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
+import babel from '@rolldown/plugin-babel'
+import { defineConfig } from 'vite'
+
+// https://vite.dev/config/
+export default defineConfig({
+  publicDir: 'assets',
+  server: {
+    fs: {
+      allow: ['..'],
+    },
+  },
+  plugins: [
+    react(),
+    babel({ presets: [reactCompilerPreset()] })
+  ],
+})
