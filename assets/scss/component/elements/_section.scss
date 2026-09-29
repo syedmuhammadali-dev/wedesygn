@@ -977,6 +977,12 @@
         justify-content: center;
         flex-shrink: 0;
 
+        .brand-icon {
+            width: 34px;
+            height: 41px;
+            object-fit: contain;
+        }
+
         path {
             fill: var(--primary);
         }

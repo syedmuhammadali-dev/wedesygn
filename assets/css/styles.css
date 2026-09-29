@@ -5120,6 +5120,11 @@ button.animate-btn::after,
   justify-content: center;
   flex-shrink: 0;
 }
+.logo-custom .logo-site-sv .brand-icon {
+  width: 34px;
+  height: 41px;
+  object-fit: contain;
+}
 .logo-custom .logo-site-sv path {
   fill: var(--primary);
 }
@@ -6786,11 +6791,11 @@ button.animate-btn::after,
   opacity: 1;
 }
 
-.logo-site .brand-logo {
+.logo-site .brand-icon {
   display: block;
-  width: 105px;
-  height: auto;
-  max-width: none;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
 }
 
 /* ---------------------------------------------------------
