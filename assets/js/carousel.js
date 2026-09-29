@@ -248,6 +248,10 @@ window.onload = function () {
             dots: false,
             infinite: true,
             focusOnSelect: true,
+            // The legacy Slick ADA initializer crashes on this vertical
+            // thumbnail carousel in some browsers. Hidden-slide focus is
+            // handled by the React accessibility bridge instead.
+            accessibility: false,
         });
 
         $(".section-selected-work .nav-prev-swiper").on("click", function () {

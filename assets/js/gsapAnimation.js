@@ -301,7 +301,9 @@
             function animateBars() {
                 for (var i = 0; i < 2; i++) {
                     var randomWidth = Math.floor(Math.random() * 101);
-                    gsap.to(innerBars[i + increment], {
+                    var currentBar = innerBars[i + increment];
+                    if (!currentBar) continue;
+                    gsap.to(currentBar, {
                         width: randomWidth + "%",
                         duration: 0.3,
                         ease: "none",
@@ -310,7 +312,9 @@
 
                 gsap.delayedCall(0.3, function () {
                     for (var i = 0; i < 2; i++) {
-                        gsap.to(innerBars[i + increment], {
+                        var currentBar = innerBars[i + increment];
+                        if (!currentBar) continue;
+                        gsap.to(currentBar, {
                             width: "100%",
                             duration: 0.3,
                             ease: "none",
