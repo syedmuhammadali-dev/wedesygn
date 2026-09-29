@@ -119,6 +119,33 @@ function startAutoplayVideos() {
   return () => observer.disconnect()
 }
 
+function keepHiddenSlidesOutOfTabOrder() {
+  const sync = () => {
+    document.querySelectorAll<HTMLElement>('.slick-slide, .swiper-slide').forEach((slide) => {
+      const focusable = [slide, ...slide.querySelectorAll<HTMLElement>('[tabindex], a, button, input, select, textarea')]
+      if (slide.getAttribute('aria-hidden') === 'true') {
+        focusable.forEach((element) => {
+          if (!element.dataset.originalTabindex) element.dataset.originalTabindex = element.getAttribute('tabindex') ?? 'none'
+          element.tabIndex = -1
+        })
+      } else {
+        focusable.forEach((element) => {
+          const original = element.dataset.originalTabindex
+          if (!original) return
+          if (original === 'none') element.removeAttribute('tabindex')
+          else element.tabIndex = Number(original)
+          delete element.dataset.originalTabindex
+        })
+      }
+    })
+  }
+
+  sync()
+  const observer = new MutationObserver(sync)
+  observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['aria-hidden'] })
+  return () => observer.disconnect()
+}
+
 function loadScript(file: string) {
   if (loadedScripts.has(file)) return Promise.resolve()
   loadedScripts.add(file)
@@ -202,11 +229,12 @@ export function LegacyPage({ source, title, scripts }: LegacyPageProps) {
     canonical.setAttribute('href', `https://wedesygn.com${path}`)
     const preloaderFallback = window.setTimeout(() => document.querySelector('.preloader')?.remove(), 5000)
     let stopVideos: (() => void) | undefined
+    const stopSlideAccessibility = keepHiddenSlidesOutOfTabOrder()
     const videoStart = window.setTimeout(() => { stopVideos = startAutoplayVideos() }, 0)
 
     if (scriptsStarted.current) {
       const routeReveal = window.setTimeout(revealRouteContent, 30)
-      return () => { window.clearTimeout(preloaderFallback); window.clearTimeout(routeReveal); window.clearTimeout(videoStart); stopVideos?.() }
+      return () => { window.clearTimeout(preloaderFallback); window.clearTimeout(routeReveal); window.clearTimeout(videoStart); stopVideos?.(); stopSlideAccessibility() }
     }
     scriptsStarted.current = true
     let startupRevealInterval: number | undefined
@@ -225,6 +253,7 @@ export function LegacyPage({ source, title, scripts }: LegacyPageProps) {
       window.clearTimeout(preloaderFallback)
       window.clearTimeout(videoStart)
       stopVideos?.()
+      stopSlideAccessibility()
       if (startupRevealInterval) window.clearInterval(startupRevealInterval)
     }
   }, [location.pathname, scripts, title])

@@ -471,7 +471,7 @@
                       <h5 class="price letter-space--2 text-primary">$49</h5>
                     </div>
                     <div class="tf-mouse">
-                      <a href="#" class="action tf-btn-2">
+                      <a href="#" class="action tf-btn-2" aria-label="View basic website package">
                         <i class="icon icon-arrow-long-right"></i>
                       </a>
                     </div>
@@ -499,7 +499,7 @@
                       <h5 class="price letter-space--2 text-primary">$49</h5>
                     </div>
                     <div class="tf-mouse">
-                      <a href="#" class="action tf-btn-2">
+                      <a href="#" class="action tf-btn-2" aria-label="View standard website package">
                         <i class="icon icon-arrow-long-right"></i>
                       </a>
                     </div>
@@ -529,7 +529,7 @@
                       <h5 class="price letter-space--2 text-primary">$49</h5>
                     </div>
                     <div class="tf-mouse">
-                      <a href="#" class="action tf-btn-2">
+                      <a href="#" class="action tf-btn-2" aria-label="View premium website package">
                         <i class="icon icon-arrow-long-right"></i>
                       </a>
                     </div>
@@ -2204,23 +2204,25 @@
                   <div class="tf-grid-layout sm-col-2">
                     <fieldset class="tf-field">
                       <input
+                        id="contact-name"
                         class="tf-input"
                         type="text"
                         placeholder
                         required
                       />
-                      <label class="tf-lable"
+                      <label for="contact-name" class="tf-lable"
                         >Name <span class="text-primary">*</span></label
                       >
                     </fieldset>
                     <fieldset class="tf-field">
                       <input
+                        id="contact-email"
                         class="tf-input"
                         type="email"
                         placeholder
                         required
                       />
-                      <label class="tf-lable"
+                      <label for="contact-email" class="tf-lable"
                         >Email <span class="text-primary">*</span></label
                       >
                     </fieldset>
@@ -2264,8 +2266,8 @@
                     </div>
                   </div>
                   <fieldset class="tf-field">
-                    <input class="tf-input" type="text" placeholder required />
-                    <label class="tf-lable">Project details</label>
+                    <input id="contact-project-details" class="tf-input" type="text" placeholder required />
+                    <label for="contact-project-details" class="tf-lable">Project details</label>
                   </fieldset>
                 </div>
                 <div class="form-action">
