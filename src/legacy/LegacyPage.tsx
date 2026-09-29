@@ -17,10 +17,6 @@ const aliases: Record<string, string> = {
 const loadedScripts = new Set<string>()
 let scriptQueue = Promise.resolve()
 
-function rewriteBrand(value: string) {
-  return value.replace(/\bDAVIES\b/g, 'WEDESYGN').replace(/\bDavies\b/g, 'Wedesygn').replace(/\bdavies\b/g, 'wedesygn')
-}
-
 function buildMarkup(source: string) {
   const body = source.match(/<body[^>]*>([\s\S]*?)<\/body>/i)?.[1] ?? ''
   const document = new DOMParser().parseFromString(`<body>${body}</body>`, 'text/html')
@@ -37,19 +33,6 @@ function buildMarkup(source: string) {
     }
   })
   root.querySelectorAll('a[href="version-2.html"]').forEach((element) => element.closest('.effectFade')?.remove())
-  root.innerHTML = root.innerHTML.replace(/davies@gmail\.com/gi, 'hello@wedesygn.com')
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
-  let node = walker.nextNode()
-  while (node) {
-    node.nodeValue = rewriteBrand(node.nodeValue ?? '')
-    node = walker.nextNode()
-  }
-  root.querySelectorAll<HTMLElement>('[alt], [title], [aria-label]').forEach((element) => {
-    for (const attribute of ['alt', 'title', 'aria-label']) {
-      const value = element.getAttribute(attribute)
-      if (value) element.setAttribute(attribute, rewriteBrand(value))
-    }
-  })
   return root.innerHTML
 }
 
