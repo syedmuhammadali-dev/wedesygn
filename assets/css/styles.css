@@ -3597,7 +3597,7 @@ header.header-sticky {
 }
 .pricing-tab_btn .tf-btn-tab.active .dot-active {
   background: var(--primary);
-  box-shadow: 0px 0px 2px 1px rgba(5, 148, 29, 0.3019607843), 0px 0px 6px 4px rgba(5, 148, 29, 0.1803921569);
+  box-shadow: 0px 0px 2px 1px rgba(255, 51, 1, 0.3019607843), 0px 0px 6px 4px rgba(255, 51, 1, 0.1803921569);
 }
 .pricing-tab_btn .dot-active {
   width: 8px;
@@ -6434,7 +6434,7 @@ button.animate-btn::after,
   overflow: hidden;
 }
 .wg-plan.style-2.type-2 {
-  background-color: rgba(7, 196, 44, 0.0509803922);
+  background-color: rgba(255, 51, 1, 0.0509803922);
 }
 .wg-plan.style-2.type-2 .bg-img {
   overflow: hidden;
@@ -6566,7 +6566,7 @@ button.animate-btn::after,
   font-size: 80px;
   font-weight: 800;
   color: #fff;
-  text-transform: uppercase;
+  text-transform: lowercase;
   overflow-x: hidden;
 }
 .preloader .preloader-gutters {
