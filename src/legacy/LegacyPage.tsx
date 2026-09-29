@@ -138,11 +138,23 @@ export function LegacyPage({ source, title, scripts }: LegacyPageProps) {
       return () => { window.clearTimeout(preloaderFallback); window.clearTimeout(routeReveal); window.clearTimeout(videoStart) }
     }
     scriptsStarted.current = true
-    const hadLoadedLegacyScripts = loadedScripts.size > 0
+    let startupRevealInterval: number | undefined
     void loadLegacyScripts(scripts).then(() => {
-      if (hadLoadedLegacyScripts) revealRouteContent()
+      const startedAt = Date.now()
+      startupRevealInterval = window.setInterval(() => {
+        const startupFinished = !document.querySelector('.preloader')
+        const startupTimedOut = Date.now() - startedAt > 4500
+        if (startupFinished || startupTimedOut) {
+          if (startupRevealInterval) window.clearInterval(startupRevealInterval)
+          revealRouteContent()
+        }
+      }, 100)
     })
-    return () => { window.clearTimeout(preloaderFallback); window.clearTimeout(videoStart) }
+    return () => {
+      window.clearTimeout(preloaderFallback)
+      window.clearTimeout(videoStart)
+      if (startupRevealInterval) window.clearInterval(startupRevealInterval)
+    }
   }, [location.pathname, scripts, title])
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
