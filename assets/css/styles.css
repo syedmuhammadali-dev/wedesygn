@@ -6780,9 +6780,11 @@ button.animate-btn::after,
   opacity: 1;
 }
 
-.logo-site .icon {
-  font-size: 40px;
-  color: var(--primary);
+.logo-site .brand-logo {
+  display: block;
+  width: 105px;
+  height: auto;
+  max-width: none;
 }
 
 /* ---------------------------------------------------------
