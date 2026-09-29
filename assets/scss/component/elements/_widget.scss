@@ -632,6 +632,13 @@
         span {
             font-size: 80px;
         }
+
+        .preloader-logo {
+            display: block;
+            width: min(72vw, 900px);
+            height: auto;
+            margin: 0 auto;
+        }
     }
 }
 

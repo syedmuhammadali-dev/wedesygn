@@ -6618,6 +6618,12 @@ button.animate-btn::after,
 .preloader .site-name span {
   font-size: 80px;
 }
+.preloader .site-name .preloader-logo {
+  display: block;
+  width: min(72vw, 900px);
+  height: auto;
+  margin: 0 auto;
+}
 
 @media only screen and (max-width: 767px) {
   .preloader .site-name span {
