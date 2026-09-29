@@ -42,6 +42,30 @@ function setMeta(name: string, content: string) {
   element.setAttribute('content', content)
 }
 
+function setMetaProperty(property: string, content: string) {
+  let element = document.querySelector(`meta[property="${property}"]`)
+  if (!element) { element = document.createElement('meta'); element.setAttribute('property', property); document.head.appendChild(element) }
+  element.setAttribute('content', content)
+}
+
+function setPageStructuredData(path: string, title: string, description: string) {
+  const id = 'page-structured-data'
+  let script = document.getElementById(id) as HTMLScriptElement | null
+  if (!script) { script = document.createElement('script'); script.id = id; script.type = 'application/ld+json'; document.head.appendChild(script) }
+  script.textContent = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': path === '/blog-single' ? 'Article' : 'WebPage',
+    '@id': `https://wedesygn.com${path}#webpage`,
+    url: `https://wedesygn.com${path}`,
+    name: title,
+    description,
+    isPartOf: { '@id': 'https://wedesygn.com/#website' },
+    publisher: { '@id': 'https://wedesygn.com/#organization' },
+    inLanguage: 'en',
+    ...(path === '/blog-single' ? { author: { '@id': 'https://wedesygn.com/#organization' } } : {}),
+  })
+}
+
 function revealRouteContent() {
   document.querySelectorAll<HTMLElement>('.preloader').forEach((element) => element.remove())
   document.querySelectorAll<HTMLElement>('.effectFade').forEach((element, index) => {
@@ -126,6 +150,19 @@ export function LegacyPage({ source, title, scripts }: LegacyPageProps) {
     document.title = title
     setMeta('description', description)
     setMeta('author', 'wedesygn')
+    setMeta('robots', 'index, follow, max-image-preview:large')
+    setMetaProperty('og:title', title)
+    setMetaProperty('og:description', description)
+    setMetaProperty('og:url', `https://wedesygn.com${path}`)
+    setMetaProperty('og:type', path === '/blog-single' ? 'article' : 'website')
+    setMetaProperty('og:site_name', 'wedesygn')
+    setMetaProperty('og:image', 'https://wedesygn.com/images/logo/logo-icon-red.png')
+    setMetaProperty('og:image:alt', 'wedesygn red and white logo')
+    setMeta('twitter:title', title)
+    setMeta('twitter:description', description)
+    setMeta('twitter:image', 'https://wedesygn.com/images/logo/logo-icon-red.png')
+    setMeta('twitter:image:alt', 'wedesygn red and white logo')
+    setPageStructuredData(path, title, description)
     document.body.className = 'counter-scroll'
     let canonical = document.querySelector('link[rel="canonical"]')
     if (!canonical) { canonical = document.createElement('link'); canonical.setAttribute('rel', 'canonical'); document.head.appendChild(canonical) }
