@@ -143,6 +143,9 @@ function LegacyPage({ page }: { page: Page }) {
     loaded.current = true
     const loadScripts = async () => {
       for (const file of scripts) await new Promise<void>((resolve) => { const script = document.createElement('script'); script.src = `/js/${file}`; script.onload = () => resolve(); script.onerror = () => resolve(); document.body.appendChild(script) })
+      // The legacy animation bundle is injected after the browser's native load
+      // event. Replay it once so its preloader and entrance timeline can start.
+      window.dispatchEvent(new Event('load'))
     }
     void loadScripts()
     return () => window.clearTimeout(preloaderFallback)
