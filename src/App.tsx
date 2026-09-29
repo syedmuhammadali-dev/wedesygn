@@ -12,11 +12,11 @@ import '../assets/css/styles.css'
 import './index.css'
 
 const HomePage = lazy(() => import('./pages/HomePage'))
-const LandingPage = lazy(() => import('./pages/LandingPage'))
-const BlogStandardPage = lazy(() => import('./pages/BlogStandardPage'))
-const BlogTwoColumnsPage = lazy(() => import('./pages/BlogTwoColumnsPage'))
-const BlogThreeColumnsPage = lazy(() => import('./pages/BlogThreeColumnsPage'))
-const BlogSinglePage = lazy(() => import('./pages/BlogSinglePage'))
+// const LandingPage = lazy(() => import('./pages/LandingPage'))
+// const BlogStandardPage = lazy(() => import('./pages/BlogStandardPage'))
+// const BlogTwoColumnsPage = lazy(() => import('./pages/BlogTwoColumnsPage'))
+// const BlogThreeColumnsPage = lazy(() => import('./pages/BlogThreeColumnsPage'))
+// const BlogSinglePage = lazy(() => import('./pages/BlogSinglePage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 function RouteLoading() {
@@ -29,11 +29,11 @@ function App() {
       <Suspense fallback={<RouteLoading />}>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/landing" element={<LandingPage />} />
+          {/* <Route path="/landing" element={<LandingPage />} />
           <Route path="/blog-standard" element={<BlogStandardPage />} />
           <Route path="/blog-two-columns" element={<BlogTwoColumnsPage />} />
           <Route path="/blog-three-columns" element={<BlogThreeColumnsPage />} />
-          <Route path="/blog-single" element={<BlogSinglePage />} />
+          <Route path="/blog-single" element={<BlogSinglePage />} /> */}
           <Route path="/404" element={<NotFoundPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
