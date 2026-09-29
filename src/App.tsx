@@ -88,6 +88,15 @@ function setMeta(name: string, content: string) {
   element.setAttribute('content', content)
 }
 
+function revealRouteContent() {
+  document.querySelectorAll<HTMLElement>('.preloader').forEach((element) => element.remove())
+  document.querySelectorAll<HTMLElement>('.effectFade').forEach((element, index) => {
+    element.style.transition = `opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) ${Math.min(index * 0.015, 0.25)}s`
+    element.style.opacity = '1'
+    element.style.transform = 'none'
+  })
+}
+
 function ContactFormBridge() {
   useEffect(() => {
     const form = document.querySelector<HTMLFormElement>('.form-cta')
@@ -123,7 +132,7 @@ function ContactFormBridge() {
 function LegacyPage({ page }: { page: Page }) {
   const navigate = useNavigate()
   const location = useLocation()
-  const loaded = useRef(false)
+  const scriptsStarted = useRef(false)
   const markup = useMemo(() => buildMarkup(page.source), [page.source])
 
   useEffect(() => {
@@ -134,13 +143,22 @@ function LegacyPage({ page }: { page: Page }) {
     setMeta('author', 'Wedesygn')
     document.body.className = 'counter-scroll'
     let canonical = document.querySelector('link[rel="canonical"]')
+
     if (!canonical) { canonical = document.createElement('link'); canonical.setAttribute('rel', 'canonical'); document.head.appendChild(canonical) }
     canonical.setAttribute('href', `https://wedesygn.com${path}`)
     const preloaderFallback = window.setTimeout(() => {
       document.querySelector('.preloader')?.remove()
     }, 5000)
-    if (loaded.current) return () => window.clearTimeout(preloaderFallback)
-    loaded.current = true
+
+    if (scriptsStarted.current) {
+      const routeReveal = window.setTimeout(revealRouteContent, 30)
+      return () => {
+        window.clearTimeout(preloaderFallback)
+        window.clearTimeout(routeReveal)
+      }
+    }
+    
+    scriptsStarted.current = true
     const loadScripts = async () => {
       for (const file of scripts) await new Promise<void>((resolve) => { const script = document.createElement('script'); script.src = `/js/${file}`; script.onload = () => resolve(); script.onerror = () => resolve(); document.body.appendChild(script) })
       // The legacy animation bundle is injected after the browser's native load
