@@ -68,6 +68,17 @@ function revealRouteContent() {
   })
 }
 
+function startAutoplayVideos() {
+  document.querySelectorAll<HTMLVideoElement>('video[autoplay]').forEach((video) => {
+    video.muted = true
+    video.setAttribute('playsinline', '')
+    void video.play().catch(() => {
+      // Browsers can still block autoplay; the muted attribute allows the next
+      // browser paint or user interaction to start it normally.
+    })
+  })
+}
+
 function loadScript(file: string) {
   if (loadedScripts.has(file)) return Promise.resolve()
   loadedScripts.add(file)
@@ -137,17 +148,18 @@ export function LegacyPage({ source, title, scripts }: LegacyPageProps) {
     if (!canonical) { canonical = document.createElement('link'); canonical.setAttribute('rel', 'canonical'); document.head.appendChild(canonical) }
     canonical.setAttribute('href', `https://wedesygn.com${path}`)
     const preloaderFallback = window.setTimeout(() => document.querySelector('.preloader')?.remove(), 5000)
+    const videoStart = window.setTimeout(startAutoplayVideos, 0)
 
     if (scriptsStarted.current) {
       const routeReveal = window.setTimeout(revealRouteContent, 30)
-      return () => { window.clearTimeout(preloaderFallback); window.clearTimeout(routeReveal) }
+      return () => { window.clearTimeout(preloaderFallback); window.clearTimeout(routeReveal); window.clearTimeout(videoStart) }
     }
     scriptsStarted.current = true
     const hadLoadedLegacyScripts = loadedScripts.size > 0
     void loadLegacyScripts(scripts).then(() => {
       if (hadLoadedLegacyScripts) revealRouteContent()
     })
-    return () => window.clearTimeout(preloaderFallback)
+    return () => { window.clearTimeout(preloaderFallback); window.clearTimeout(videoStart) }
   }, [location.pathname, scripts, title])
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
