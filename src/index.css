@@ -34,21 +34,21 @@ body {
 
 .cookie-consent strong { display: block; margin-bottom: 0.35rem; }
 .cookie-consent p { margin: 0; color: rgba(255, 255, 255, 0.7); font-size: 0.8rem; line-height: 1.5; }
-.cookie-consent a { color: #07c42c; }
+.cookie-consent a { color: #FF3301; }
 .cookie-consent__actions { display: flex; flex-shrink: 0; gap: 0.5rem; }
 .cookie-consent button { padding: 0.65rem 0.85rem; border: 1px solid rgba(255, 255, 255, 0.3); color: #fff; background: transparent; cursor: pointer; white-space: nowrap; }
-.cookie-consent__accept { border-color: #07c42c !important; background: #07c42c !important; color: #000 !important; }
+.cookie-consent__accept { border-color: #FF3301 !important; background: #FF3301 !important; color: #000 !important; }
 
 .privacy-page { min-height: 100vh; padding: 5rem 1.5rem; color: #fff; background: #050505; }
 .privacy-page__inner { max-width: 50rem; margin: 0 auto; }
-.privacy-page__back { color: #07c42c; text-decoration: none; }
-.privacy-page__eyebrow { margin-top: 4rem; color: #07c42c; letter-spacing: 0.15em; }
+.privacy-page__back { color: #FF3301; text-decoration: none; }
+.privacy-page__eyebrow { margin-top: 4rem; color: #FF3301; letter-spacing: 0.15em; }
 .privacy-page h1 { margin: 0 0 0.75rem; font-size: clamp(2.5rem, 7vw, 6rem); line-height: 0.95; }
 .privacy-page__updated { color: rgba(255, 255, 255, 0.55); }
 .privacy-page section { max-width: 48rem; margin-top: 3rem; }
 .privacy-page h2 { margin-bottom: 0.75rem; font-size: 1.25rem; }
 .privacy-page section p { color: rgba(255, 255, 255, 0.72); line-height: 1.8; }
-.privacy-page section a { color: #07c42c; }
+.privacy-page section a { color: #FF3301; }
 
 @media (max-width: 700px) {
   .cookie-consent { right: 1rem; bottom: 1rem; left: 1rem; display: block; }
