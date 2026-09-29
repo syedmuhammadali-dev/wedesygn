@@ -1,5 +1,9 @@
 RewriteEngine On
 
+# Send API requests to the PHP front controller before the React fallback.
+RewriteCond %{REQUEST_URI} !^/api/index\.php$
+RewriteRule ^api(?:/.*)?$ api/index.php [L,QSA]
+
 # Let Vite's generated files and the Search Console verification file pass through.
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
