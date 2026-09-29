@@ -76,14 +76,47 @@ function revealRouteContent() {
 }
 
 function startAutoplayVideos() {
-  document.querySelectorAll<HTMLVideoElement>('video[autoplay]').forEach((video) => {
+  const videos = [...document.querySelectorAll<HTMLVideoElement>('video')]
+  const eagerVideos = videos.filter((video) => !video.hasAttribute('data-lazy-video'))
+  const lazyVideos = videos.filter((video) => video.hasAttribute('data-lazy-video'))
+
+  const playVideo = (video: HTMLVideoElement) => {
     video.muted = true
     video.setAttribute('playsinline', '')
     void video.play().catch(() => {
       // Browsers can still block autoplay; the muted attribute allows the next
       // browser paint or user interaction to start it normally.
     })
-  })
+  }
+
+  eagerVideos.forEach(playVideo)
+
+  if (!lazyVideos.length) return () => undefined
+  if (!('IntersectionObserver' in window)) {
+    lazyVideos.forEach(playVideo)
+    return () => undefined
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const video = entry.target as HTMLVideoElement
+      if (entry.isIntersecting) {
+        video.muted = true
+        video.setAttribute('playsinline', '')
+        if (video.dataset.loaded !== 'true') {
+          video.preload = 'metadata'
+          video.load()
+          video.dataset.loaded = 'true'
+        }
+        playVideo(video)
+      } else {
+        video.pause()
+      }
+    })
+  }, { rootMargin: '300px 0px', threshold: 0.01 })
+
+  lazyVideos.forEach((video) => observer.observe(video))
+  return () => observer.disconnect()
 }
 
 function loadScript(file: string) {
@@ -168,11 +201,12 @@ export function LegacyPage({ source, title, scripts }: LegacyPageProps) {
     if (!canonical) { canonical = document.createElement('link'); canonical.setAttribute('rel', 'canonical'); document.head.appendChild(canonical) }
     canonical.setAttribute('href', `https://wedesygn.com${path}`)
     const preloaderFallback = window.setTimeout(() => document.querySelector('.preloader')?.remove(), 5000)
-    const videoStart = window.setTimeout(startAutoplayVideos, 0)
+    let stopVideos: (() => void) | undefined
+    const videoStart = window.setTimeout(() => { stopVideos = startAutoplayVideos() }, 0)
 
     if (scriptsStarted.current) {
       const routeReveal = window.setTimeout(revealRouteContent, 30)
-      return () => { window.clearTimeout(preloaderFallback); window.clearTimeout(routeReveal); window.clearTimeout(videoStart) }
+      return () => { window.clearTimeout(preloaderFallback); window.clearTimeout(routeReveal); window.clearTimeout(videoStart); stopVideos?.() }
     }
     scriptsStarted.current = true
     let startupRevealInterval: number | undefined
@@ -190,6 +224,7 @@ export function LegacyPage({ source, title, scripts }: LegacyPageProps) {
     return () => {
       window.clearTimeout(preloaderFallback)
       window.clearTimeout(videoStart)
+      stopVideos?.()
       if (startupRevealInterval) window.clearInterval(startupRevealInterval)
     }
   }, [location.pathname, scripts, title])

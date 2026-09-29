@@ -151,7 +151,7 @@
       <div class="section-hero-v1">
         <div class="overlay"></div>
         <div class="bg-video">
-          <video class="" muted="" autoplay="" loop="" playsinline="" preload="auto">
+          <video class="" muted="" autoplay="" loop="" playsinline="" preload="metadata">
             <source src="assets/images/video/corridor.webm" type="video/webm" />
           </video>
           <div class="video-overlay"></div>
@@ -993,7 +993,8 @@
                   <video
                     class="video"
                     muted=""
-                    autoplay=""
+                    data-lazy-video=""
+                    preload="none"
                     loop=""
                     playsinline=""
                   >
