@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import CookieConsent from './components/CookieConsent'
 import '../assets/fonts/fonts.css'
 import '../assets/icon/icomoon/style.css'
 import '../assets/css/bootstrap.min.css'
@@ -18,6 +19,7 @@ const HomePage = lazy(() => import('./pages/HomePage'))
 // const BlogThreeColumnsPage = lazy(() => import('./pages/BlogThreeColumnsPage'))
 // const BlogSinglePage = lazy(() => import('./pages/BlogSinglePage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
 
 function RouteLoading() {
   return <div className="route-loading" aria-live="polite">Wedesygn</div>
@@ -29,6 +31,7 @@ function App() {
       <Suspense fallback={<RouteLoading />}>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           {/* <Route path="/landing" element={<LandingPage />} />
           <Route path="/blog-standard" element={<BlogStandardPage />} />
           <Route path="/blog-two-columns" element={<BlogTwoColumnsPage />} />
@@ -38,6 +41,7 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
+      <CookieConsent />
     </BrowserRouter>
   )
 }
