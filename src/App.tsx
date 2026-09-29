@@ -22,7 +22,7 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
 
 function RouteLoading() {
-  return <div className="route-loading" aria-live="polite">Wedesygn</div>
+  return <div className="route-loading" aria-live="polite">wedesygn</div>
 }
 
 function App() {

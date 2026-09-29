@@ -122,10 +122,10 @@ export function LegacyPage({ source, title, scripts }: LegacyPageProps) {
 
   useEffect(() => {
     const path = aliases[location.pathname] ?? location.pathname
-    const description = path.startsWith('/blog-') ? 'Insights and ideas from Wedesygn on design, development and digital experiences.' : 'Wedesygn creates bold, functional digital experiences through strategy, design and development.'
+    const description = path.startsWith('/blog-') ? 'Insights and ideas from wedesygn on design, development and digital experiences.' : 'wedesygn creates bold, functional digital experiences through strategy, design and development.'
     document.title = title
     setMeta('description', description)
-    setMeta('author', 'Wedesygn')
+    setMeta('author', 'wedesygn')
     document.body.className = 'counter-scroll'
     let canonical = document.querySelector('link[rel="canonical"]')
     if (!canonical) { canonical = document.createElement('link'); canonical.setAttribute('rel', 'canonical'); document.head.appendChild(canonical) }

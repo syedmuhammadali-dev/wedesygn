@@ -20,7 +20,7 @@ export default function CookieConsent() {
       <div>
         <strong>Privacy choices</strong>
         <p>
-          Wedesygn uses Google Analytics only with your permission to understand website usage and improve the experience. Read our{' '}
+          wedesygn uses Google Analytics only with your permission to understand website usage and improve the experience. Read our{' '}
           <a href="/privacy-policy">Privacy Policy</a>.
         </p>
       </div>
