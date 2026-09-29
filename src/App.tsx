@@ -136,12 +136,16 @@ function LegacyPage({ page }: { page: Page }) {
     let canonical = document.querySelector('link[rel="canonical"]')
     if (!canonical) { canonical = document.createElement('link'); canonical.setAttribute('rel', 'canonical'); document.head.appendChild(canonical) }
     canonical.setAttribute('href', `https://wedesygn.com${path}`)
-    if (loaded.current) return
+    const preloaderFallback = window.setTimeout(() => {
+      document.querySelector('.preloader')?.remove()
+    }, 5000)
+    if (loaded.current) return () => window.clearTimeout(preloaderFallback)
     loaded.current = true
     const loadScripts = async () => {
       for (const file of scripts) await new Promise<void>((resolve) => { const script = document.createElement('script'); script.src = `/js/${file}`; script.onload = () => resolve(); script.onerror = () => resolve(); document.body.appendChild(script) })
     }
     void loadScripts()
+    return () => window.clearTimeout(preloaderFallback)
   }, [location.pathname, page])
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
