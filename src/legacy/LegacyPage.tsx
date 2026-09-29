@@ -160,6 +160,13 @@ export function LegacyPage({ source, title, scripts }: LegacyPageProps) {
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const anchor = (event.target as HTMLElement).closest('a')
     const href = anchor?.getAttribute('href')
+    if (anchor?.classList.contains('action-go-top')) {
+      event.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
+      return
+    }
     if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('http')) return
     const cleanPath = aliases[href] ?? href
     if (cleanPath.startsWith('/')) { event.preventDefault(); navigate(cleanPath) }
