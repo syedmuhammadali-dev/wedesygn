@@ -556,7 +556,7 @@ header {
     font-size: 20px;
     line-height: 28px;
     letter-spacing: 0;
-    font-family: var(--font_instrument);
+    font-family: $font-main;
     font-weight: 600;
     text-transform: uppercase;
 }
@@ -567,7 +567,7 @@ header {
     line-height: 20px;
     margin: 0;
     letter-spacing: 0;
-    font-family: var(--font_instrument);
+    font-family: $font-main;
     font-weight: 500;
 }
 
@@ -575,7 +575,7 @@ header {
     color: rgba(255, 255, 255, 0.75);
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    font-family: var(--font_instrument);
+    font-family: $font-main;
     display: block;
     line-height: 20px;
     font-weight: 500;

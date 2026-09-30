@@ -244,7 +244,7 @@ html {
 }
 
 body {
-  font-family: "Boilover", sans-serif;
+  font-family: "Grift", sans-serif;
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
@@ -352,7 +352,7 @@ a {
   text-decoration: none;
   cursor: pointer;
   display: inline-block;
-  font-family: "Boilover", sans-serif;
+  font-family: "Grift", sans-serif;
   color: var(--text);
 }
 a:focus, a:hover {
@@ -653,7 +653,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Boilover", sans-serif;
+  font-family: "Grift", sans-serif;
   text-rendering: optimizeLegibility;
   font-weight: 500;
   margin-bottom: 0;
@@ -666,7 +666,7 @@ h6 {
 .h4,
 .h5,
 .h6 {
-  font-family: "Boilover", sans-serif;
+  font-family: "Grift", sans-serif;
   text-rendering: optimizeLegibility;
   font-weight: 400;
   margin-bottom: 0;
@@ -711,7 +711,7 @@ h6,
 
 /* Font custom */
 .font-main {
-  font-family: "Boilover", sans-serif;
+  font-family: "Grift", sans-serif;
 }
 
 .text-display-1 {
@@ -1991,7 +1991,7 @@ header.header-sticky {
   font-size: 20px;
   line-height: 28px;
   letter-spacing: 0;
-  font-family: var(--font_instrument);
+  font-family: "Grift", sans-serif;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -2002,7 +2002,7 @@ header.header-sticky {
   line-height: 20px;
   margin: 0;
   letter-spacing: 0;
-  font-family: var(--font_instrument);
+  font-family: "Grift", sans-serif;
   font-weight: 500;
 }
 
@@ -2010,7 +2010,7 @@ header.header-sticky {
   color: rgba(255, 255, 255, 0.75);
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  font-family: var(--font_instrument);
+  font-family: "Grift", sans-serif;
   display: block;
   line-height: 20px;
   font-weight: 500;
@@ -2867,7 +2867,7 @@ header.header-sticky {
   font-weight: 400;
   border-radius: 8px;
   text-align: center;
-  font-family: "Boilover", sans-serif;
+  font-family: "Grift", sans-serif;
   display: none;
 }
 .hover-tooltip .tooltip::before {
