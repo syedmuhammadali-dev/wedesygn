@@ -485,10 +485,15 @@
         const initDesktop = () => {
             const $mainScrolls = $section.find(".wg-service-2");
 
-            $mainScrolls.css("pointer-events", "none");
-            $mainScrolls.eq(0).css("pointer-events", "auto");
+            // Keep only the first card visible while the pinned timeline is
+            // being created. This prevents extra cards from flashing/stacking
+            // on resize or before ScrollTrigger has its first update.
+            $mainScrolls.css({ opacity: 0, visibility: "hidden", pointerEvents: "none" });
+            $mainScrolls.eq(0).css({ opacity: 1, visibility: "visible", pointerEvents: "auto" });
 
             tl = gsap.timeline({ paused: true });
+            const stepLabels = ["service-step-0"];
+            tl.addLabel(stepLabels[0], 0);
 
             $mainScrolls.each(function (i, el) {
                 const $main = $(el);
@@ -525,6 +530,9 @@
                         "<"
                     );
 
+                    tl.set($main, { visibility: "hidden" }, ">" );
+                    tl.set($next, { visibility: "visible" }, ">" );
+
                     tl.fromTo(
                         $next,
                         { scale: 0.95, opacity: 0 },
@@ -540,7 +548,7 @@
                                 $next.css("pointer-events", "none");
                             },
                         },
-                        "<"
+                        ">"
                     );
 
                     if ($bgCurrent.length && $bgNext.length) {
@@ -565,6 +573,9 @@
                             "<"
                         );
                     }
+
+                    stepLabels.push(`service-step-${i + 1}`);
+                    tl.addLabel(stepLabels[i + 1]);
                 }
             });
 
@@ -613,10 +624,18 @@
                             const baseDuration = 1;
                             const duration = baseDuration * Math.min(distance, 1.2);
 
-                            tl.tweenTo(currentStep * stepLength * tl.duration(), {
+                            tl.tweenTo(stepLabels[currentStep], {
                                 duration: duration,
                                 ease: "power2.inOut",
                                 onComplete: () => {
+                                    $mainScrolls.each(function (index, card) {
+                                        $(card).css({
+                                            opacity: index === currentStep ? 1 : 0,
+                                            visibility: index === currentStep ? "visible" : "hidden",
+                                            transform: index === currentStep ? "scale(1)" : "scale(0.95)",
+                                            "pointer-events": index === currentStep ? "auto" : "none",
+                                        });
+                                    });
                                     isAnimating = false;
                                 },
                             });

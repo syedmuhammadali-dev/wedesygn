@@ -226,7 +226,13 @@ window.onload = function () {
     }
 
     if (document.querySelector(".section-selected-work")) {
-        const $for = $(".slick-for").slick({
+        const $forElement = $(".slick-for");
+        const $navElement = $(".slick-nav");
+        if ($forElement.hasClass("slick-initialized") || $navElement.hasClass("slick-initialized")) {
+            return;
+        }
+
+        const $for = $forElement.slick({
             slidesToShow: 1,
             slidesToScroll: 1,
             arrows: false,
@@ -235,9 +241,10 @@ window.onload = function () {
             infinite: true,
             autoplay: true,
             autoplaySpeed: 2000,
+            accessibility: false,
         });
 
-        const $nav = $(".slick-nav").slick({
+        const $nav = $navElement.slick({
             slidesToShow: 3,
             slidesToScroll: 1,
             asNavFor: ".slick-for",
