@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import CookieConsent from './components/CookieConsent'
+import loadingLogo from '../assets/images/logo/wedesygn-text.png'
 import '../assets/fonts/fonts.css'
 import '../assets/icon/icomoon/style.css'
 import '../assets/css/bootstrap.min.css'
@@ -22,7 +23,11 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
 
 function RouteLoading() {
-  return <div className="route-loading" aria-live="polite">wedesygn</div>
+  return (
+    <div className="route-loading" aria-live="polite">
+      <img src={loadingLogo} alt="wedesygn" />
+    </div>
+  )
 }
 
 function App() {
