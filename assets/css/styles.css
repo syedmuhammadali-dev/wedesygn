@@ -6417,7 +6417,7 @@ button.animate-btn::after,
   inset: 0;
 }
 .wg-plan .bg-img.bg-img_1 {
-  background-image: url("/images/item/start.png");
+  background-image: url("/images/item/start.webp");
   background-repeat: repeat-y;
   background-position: center;
   animation: moveUp 60s linear infinite;
