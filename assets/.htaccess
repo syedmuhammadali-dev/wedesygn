@@ -1,16 +1,27 @@
 RewriteEngine On
 
-# Send API requests to the PHP front controller before the React fallback.
+# Force HTTPS. The X-Forwarded-Proto check keeps this safe behind a CDN/proxy
+# that terminates TLS; if you ever see a redirect loop, remove this block and
+# use the hosting panel's "Force HTTPS" switch instead.
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Send API requests to the PHP front controller before anything else.
 RewriteCond %{REQUEST_URI} !^/api/index\.php$
 RewriteRule ^api(?:/.*)?$ api/index.php [L,QSA]
 
-# Let Vite's generated files and the Search Console verification file pass through.
+# Let real files and folders (Vite assets, sitemap, robots, Search Console file) pass through.
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Serve the React app for clean client-side routes.
-RewriteRule ^ index.html [L]
+# Known pages are pre-rendered static HTML (see scripts/prerender.mjs).
+RewriteRule ^privacy-policy/?$ privacy-policy.html [L]
+
+# Anything else is a genuine 404 (not a soft 404 that returns 200).
+ErrorDocument 404 /404.html
+RewriteRule ^ - [R=404,L]
 
 # Cache immutable static assets and compress text responses for Lighthouse performance.
 <IfModule mod_expires.c>
@@ -30,7 +41,7 @@ RewriteRule ^ index.html [L]
   <FilesMatch "\.(css|js|mjs|svg|png|jpe?g|webp|woff2?|ttf|eot)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
-  <FilesMatch "^index\.html$">
+  <FilesMatch "^(index|404|privacy-policy)\.html$">
     Header set Cache-Control "no-cache, no-store, must-revalidate"
   </FilesMatch>
 </IfModule>
