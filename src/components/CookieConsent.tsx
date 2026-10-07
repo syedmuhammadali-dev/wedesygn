@@ -7,11 +7,13 @@ function setAnalyticsConsent(granted: boolean) {
   gtag?.('consent', 'update', {
     analytics_storage: granted ? 'granted' : 'denied',
   })
-  localStorage.setItem(CONSENT_KEY, granted ? 'granted' : 'denied')
+  // Only "Allow" is remembered. "Reject" is not saved, so the banner returns on the next page load.
+  if (granted) localStorage.setItem(CONSENT_KEY, 'granted')
+  else localStorage.removeItem(CONSENT_KEY)
 }
 
 export default function CookieConsent() {
-  const [visible, setVisible] = useState(() => !localStorage.getItem(CONSENT_KEY))
+  const [visible, setVisible] = useState(() => localStorage.getItem(CONSENT_KEY) !== 'granted')
 
   if (!visible) return null
 
