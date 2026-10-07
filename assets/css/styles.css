@@ -4407,6 +4407,10 @@ button.animate-btn::after,
   justify-content: space-between;
   height: 100%;
 }
+.section-hero-v1 .col-left {
+  /* only the big wedesygn logo is left in this column; keep it at the bottom */
+  justify-content: flex-end;
+}
 @media (min-width: 1200px) {
   .section-hero-v1 .col-right .top {
     padding-top: 24px;
