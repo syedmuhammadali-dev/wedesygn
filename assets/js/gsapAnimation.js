@@ -448,8 +448,6 @@
 
         let mode = null;
         let tl = null;
-        let stInstance = null;
-        let isNavigating = false;
 
         function debounce(fn, wait = 100) {
             let timeout;
@@ -459,28 +457,6 @@
                 timeout = setTimeout(() => fn.apply(ctx, args), wait);
             };
         }
-
-        const detectAnchorNavigation = () => {
-            $('a[href^="#"]').on("click", function (e) {
-                const targetId = $(this).attr("href");
-                const $target = $(targetId);
-
-                if ($target.length) {
-                    isNavigating = true;
-
-                    setTimeout(() => {
-                        isNavigating = false;
-                    }, 1500);
-                }
-            });
-
-            if (window.location.hash) {
-                isNavigating = true;
-                setTimeout(() => {
-                    isNavigating = false;
-                }, 1500);
-            }
-        };
 
         const initDesktop = () => {
             const $mainScrolls = $section.find(".wg-service-2");
@@ -580,79 +556,35 @@
             });
 
             const totalSteps = $mainScrolls.length - 1;
-            const stepLength = 1 / totalSteps;
             let currentStep = 0;
             let isAnimating = false;
-            let lastScrollTime = Date.now();
-            let scrollVelocity = 0;
 
-            const startValue = window.innerWidth < 1600 ? "top top" : "top top";
+            // Services change only from the arrow button, never from scrolling.
+            $section.off("click.serviceArrow").on("click.serviceArrow", ".wg-service-2 .action.tf-btn-2", () => {
+                if (isAnimating || totalSteps < 1) return;
+                isAnimating = true;
+                currentStep = (currentStep + 1) % $mainScrolls.length;
 
-            stInstance = ScrollTrigger.create({
-                trigger: $section[0],
-                start: startValue,
-                end: "+=" + totalSteps * 1000,
-                pin: true,
-                scrub: false,
-                markers: false,
-                anticipatePin: 1,
-                onUpdate: (self) => {
-                    if (isNavigating) {
-                        return;
-                    }
-
-                    const now = Date.now();
-                    const timeDelta = now - lastScrollTime;
-                    const progressDelta = Math.abs(self.progress - currentStep * stepLength);
-                    scrollVelocity = progressDelta / (timeDelta || 1);
-                    lastScrollTime = now;
-
-                    const progress = self.progress;
-                    const targetStep = Math.round(progress * totalSteps);
-
-                    if (targetStep !== currentStep) {
-                        if (isAnimating && scrollVelocity > 0.001) {
-                            self.scroll(self.start + (currentStep / totalSteps) * (self.end - self.start));
-                            return;
-                        }
-
-                        if (!isAnimating) {
-                            isAnimating = true;
-                            const oldStep = currentStep;
-                            currentStep = targetStep;
-                            const distance = Math.abs(targetStep - oldStep);
-                            const baseDuration = 1;
-                            const duration = baseDuration * Math.min(distance, 1.2);
-
-                            tl.tweenTo(stepLabels[currentStep], {
-                                duration: duration,
-                                ease: "power2.inOut",
-                                onComplete: () => {
-                                    $mainScrolls.each(function (index, card) {
-                                        $(card).css({
-                                            opacity: index === currentStep ? 1 : 0,
-                                            visibility: index === currentStep ? "visible" : "hidden",
-                                            transform: index === currentStep ? "scale(1)" : "scale(0.95)",
-                                            "pointer-events": index === currentStep ? "auto" : "none",
-                                        });
-                                    });
-                                    isAnimating = false;
-                                },
+                tl.tweenTo(stepLabels[currentStep], {
+                    duration: 1,
+                    ease: "power2.inOut",
+                    onComplete: () => {
+                        $mainScrolls.each(function (index, card) {
+                            $(card).css({
+                                opacity: index === currentStep ? 1 : 0,
+                                visibility: index === currentStep ? "visible" : "hidden",
+                                transform: index === currentStep ? "scale(1)" : "scale(0.95)",
+                                "pointer-events": index === currentStep ? "auto" : "none",
                             });
-                        }
-                    }
-                },
+                        });
+                        isAnimating = false;
+                    },
+                });
             });
-
-            detectAnchorNavigation();
         };
 
         const destroyDesktop = () => {
-            if (stInstance) {
-                stInstance.kill();
-                stInstance = null;
-            }
-
+            $section.off("click.serviceArrow");
             if (tl) {
                 tl.kill();
                 tl = null;
