@@ -122,6 +122,17 @@ $(window).on("load", function () {
                 },
             },
         });
+        // Portfolio cards: the round arrow shows the next card (back to the first after the last)
+        // instead of jumping to the top of the page; the placeholder "#" links just do nothing.
+        if ($this.hasClass("swiper-feature")) {
+            $this.on("click", "a[href='#']", function (e) {
+                e.preventDefault();
+                if ($(this).closest(".tf-mouse").length) {
+                    if (swiperT.isEnd) swiperT.slideTo(0);
+                    else swiperT.slideNext();
+                }
+            });
+        }
         $(".swiper-button")
             .on("mouseenter", function () {
                 var slideIndex = $(this).data("slide");
