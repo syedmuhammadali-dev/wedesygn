@@ -2,32 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://wedesygn.com/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://wedesygn.com/privacy-policy</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
     <loc>https://wedesygn.com/portfolio</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
     <loc>https://wedesygn.com/services</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
     <loc>https://wedesygn.com/about-us</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-10-07</lastmod>
   </url>
   <url>
     <loc>https://wedesygn.com/contact</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-10-07</lastmod>
+  </url>
+  <url>
+    <loc>https://wedesygn.com/privacy-policy</loc>
+    <lastmod>2026-10-07</lastmod>
   </url>
 </urlset>
