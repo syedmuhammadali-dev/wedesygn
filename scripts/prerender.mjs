@@ -33,7 +33,22 @@ function homeMarkup() {
   return body
 }
 
-function withMeta(html, { title, description, path, robots }) {
+// WebPage + BreadcrumbList structured data for inner pages (Home > Page).
+function pageLd(title, description, path, name) {
+  const url = `${site}${path}`
+  return `<script type="application/ld+json">${JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': [
+      { '@type': 'WebPage', '@id': `${url}#webpage`, url, name: title, description, inLanguage: 'en', isPartOf: { '@id': `${site}/#website` }, publisher: { '@id': `${site}/#organization` } },
+      { '@type': 'BreadcrumbList', itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${site}/` },
+        { '@type': 'ListItem', position: 2, name, item: url },
+      ] },
+    ],
+  })}</script>`
+}
+
+function withMeta(html, { title, description, path, robots, name }) {
   const url = `${site}${path}`
   let out = html
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`)
@@ -41,8 +56,12 @@ function withMeta(html, { title, description, path, robots }) {
     .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${url}$2`)
     .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`)
     .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${title}$2`)
+    .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${description}$2`)
+    .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${description}$2`)
     .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${title}$2`)
   if (robots) out = out.replace(/(<meta name="robots" content=")[^"]*(")/, `$1${robots}$2`)
+  if (name) out = out.replace('</head>', `    ${pageLd(title, description, path, name)}
+  </head>`)
   return out
 }
 
@@ -57,6 +76,7 @@ try {
     title: 'Privacy Policy — wedesygn',
     description: 'wedesygn privacy policy covering analytics, contact forms and website data.',
     path: '/privacy-policy',
+    name: 'Privacy Policy',
   }).replace(emptyRoot, `<div id="root">${renderToString(createElement(PrivacyPolicyPage))}</div>`)
   writeFileSync(dist('privacy-policy.html'), privacy)
 
@@ -64,7 +84,7 @@ try {
   const { sectionPages } = await vite.ssrLoadModule('/src/pages/sections.ts')
   const { default: SectionPage } = await vite.ssrLoadModule('/src/pages/SectionPage.tsx')
   for (const page of sectionPages) {
-    const html = withMeta(shell, { title: page.title, description: page.description, path: page.path })
+    const html = withMeta(shell, { title: page.title, description: page.description, path: page.path, name: page.heading })
       .replace(emptyRoot, `<div id="root">${renderToString(createElement(SectionPage, page))}</div>`)
     writeFileSync(dist(page.file), html)
   }
