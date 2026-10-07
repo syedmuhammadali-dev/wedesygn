@@ -462,10 +462,23 @@
             let current = 0;
             let isAnimating = false;
 
-            // Only the active card is visible; the others wait on the left.
-            // Only transform/opacity are animated so the transition stays smooth.
-            gsap.set($cards, { autoAlpha: 0, x: -80, pointerEvents: "none" });
-            gsap.set($cards.eq(0), { autoAlpha: 1, x: 0, pointerEvents: "auto" });
+            // Pieces of a card that animate separately: the banner, the small preview image,
+            // the round arrow and the text block (title, description, list, button).
+            const parts = ($card) => ({
+                img: $card.find(".main-image .image"),
+                mini: $card.find(".image-2"),
+                arrow: $card.find(".main-image .action"),
+                text: $card.find(".center").children(),
+            });
+            const resetParts = ($card) => {
+                const p = parts($card);
+                gsap.set(p.img.add(p.mini).add(p.arrow).add(p.text), { clearProps: "all" });
+            };
+
+            // Cards are stacked; only the active one is visible. Only transform, opacity and
+            // clip-path are animated so the transition stays smooth.
+            gsap.set($cards, { autoAlpha: 0, pointerEvents: "none", zIndex: 0 });
+            gsap.set($cards.eq(0), { autoAlpha: 1, pointerEvents: "auto", zIndex: 1 });
             gsap.set($bg, { opacity: 0 });
             gsap.set($bg.eq(0), { opacity: 1 });
 
@@ -479,17 +492,38 @@
                 const from = current;
                 const to = (current + 1) % $cards.length;
                 current = to;
+                const $from = $cards.eq(from);
+                const $to = $cards.eq(to);
+                const f = parts($from);
+                const t = parts($to);
 
-                // Always left -> right, including the jump from the last card back to the first:
-                // the old card leaves to the right, the next one enters from the left.
-                const move = gsap.timeline({ defaults: { ease: "power2.inOut" }, onComplete: () => { isAnimating = false; } });
-                move.set($cards.eq(from), { pointerEvents: "none" })
-                    .to($cards.eq(from), { autoAlpha: 0, x: 80, duration: 0.45 })
-                    .set($cards.eq(to), { x: -80, pointerEvents: "auto" })
-                    .to($cards.eq(to), { autoAlpha: 1, x: 0, duration: 0.55 }, ">-0.05");
+                // Incoming card sits on top with its banner hidden on the left and its text hidden.
+                // The arrow stays put (the old arrow vanishes the moment the new one appears).
+                gsap.set($from, { pointerEvents: "none", zIndex: 1 });
+                gsap.set(f.arrow, { autoAlpha: 0 });
+                gsap.set($to, { autoAlpha: 1, pointerEvents: "auto", zIndex: 2 });
+                gsap.set(t.img, { clipPath: "inset(0 100% 0 0)" });
+                gsap.set(t.mini, { autoAlpha: 0, scale: 1.06 });
+                gsap.set(t.text, { autoAlpha: 0, y: 18 });
+
+                const move = gsap.timeline({
+                    onComplete: () => {
+                        gsap.set($from, { autoAlpha: 0, zIndex: 0 });
+                        resetParts($from);
+                        gsap.set(t.img, { clearProps: "clipPath" });
+                        isAnimating = false;
+                    },
+                });
+                // Banner changes: the new one is revealed left -> right over the old one.
+                move.to(f.text, { autoAlpha: 0, duration: 0.25, ease: "power1.out" }, 0)
+                    .to(f.mini, { autoAlpha: 0, duration: 0.35, ease: "power1.out" }, 0)
+                    .to(t.img, { clipPath: "inset(0 0% 0 0)", duration: 0.85, ease: "power3.inOut" }, 0)
+                    .to(t.mini, { autoAlpha: 1, scale: 1, duration: 0.7, ease: "power2.out" }, 0.3)
+                    // Then the service text fades in, one line after the other.
+                    .to(t.text, { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.09, ease: "power2.out" }, 0.4);
                 if (bgOf(from) !== bgOf(to)) {
-                    move.to($bg.eq(bgOf(from)), { opacity: 0, duration: 0.8 }, 0)
-                        .to($bg.eq(bgOf(to)), { opacity: 1, duration: 0.8 }, 0);
+                    move.to($bg.eq(bgOf(from)), { opacity: 0, duration: 0.9, ease: "power1.inOut" }, 0)
+                        .to($bg.eq(bgOf(to)), { opacity: 1, duration: 0.9, ease: "power1.inOut" }, 0);
                 }
             });
         };
