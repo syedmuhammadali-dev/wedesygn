@@ -5558,7 +5558,6 @@ button.animate-btn::after,
   inset: 0;
   z-index: 0;
   background: rgba(0, 0, 0, 0.5607843137);
-  backdrop-filter: blur(24px);
 }
 @media (min-width: 1200px) {
   .section-service-2 .wg-service-2:not(:first-child) {

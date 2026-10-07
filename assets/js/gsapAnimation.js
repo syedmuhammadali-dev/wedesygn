@@ -447,7 +447,6 @@
         gsap.registerPlugin(ScrollTrigger);
 
         let mode = null;
-        let tl = null;
 
         function debounce(fn, wait = 100) {
             let timeout;
@@ -459,159 +458,47 @@
         }
 
         const initDesktop = () => {
-            const $mainScrolls = $section.find(".wg-service-2");
-
-            // Keep only the first card visible while the pinned timeline is
-            // being created. This prevents extra cards from flashing/stacking
-            // on resize or before ScrollTrigger has its first update.
-            $mainScrolls.css({ opacity: 0, visibility: "hidden", pointerEvents: "none" });
-            $mainScrolls.eq(0).css({ opacity: 1, visibility: "visible", pointerEvents: "auto" });
-
-            tl = gsap.timeline({ paused: true });
-            const stepLabels = ["service-step-0"];
-            tl.addLabel(stepLabels[0], 0);
-
-            $mainScrolls.each(function (i, el) {
-                const $main = $(el);
-                const $itemImage = $main.find(".image-2");
-                const $next = $mainScrolls.eq(i + 1);
-                const $bgCurrent = $bg.eq(i);
-                const $bgNext = $bg.eq(i + 1);
-
-                if ($next.length) {
-                    if ($itemImage.length) {
-                        tl.to($itemImage, {
-                            left: 0,
-                            width: 424,
-                            height: 530,
-                            opacity: 0,
-                            duration: 1,
-                            ease: "power2.out",
-                        });
-                    }
-
-                    tl.to(
-                        $main,
-                        {
-                            opacity: 0,
-                            duration: 0.8,
-                            ease: "power2.out",
-                            onStart: () => {
-                                $main.css("pointer-events", "none");
-                            },
-                            onReverseComplete: () => {
-                                $main.css("pointer-events", "auto");
-                            },
-                        },
-                        "<"
-                    );
-
-                    tl.set($main, { visibility: "hidden" }, ">" );
-                    tl.set($next, { visibility: "visible" }, ">" );
-
-                    tl.fromTo(
-                        $next,
-                        { scale: 0.95, opacity: 0 },
-                        {
-                            scale: 1,
-                            opacity: 1,
-                            duration: 1,
-                            ease: "power2.out",
-                            onStart: () => {
-                                $next.css("pointer-events", "auto");
-                            },
-                            onReverseComplete: () => {
-                                $next.css("pointer-events", "none");
-                            },
-                        },
-                        ">"
-                    );
-
-                    if ($bgCurrent.length && $bgNext.length) {
-                        tl.to(
-                            $bgCurrent,
-                            {
-                                opacity: 0,
-                                duration: 1,
-                                ease: "power2.out",
-                            },
-                            "<"
-                        );
-
-                        tl.fromTo(
-                            $bgNext,
-                            { opacity: 0 },
-                            {
-                                opacity: 1,
-                                duration: 1,
-                                ease: "power2.out",
-                            },
-                            "<"
-                        );
-                    }
-
-                    stepLabels.push(`service-step-${i + 1}`);
-                    tl.addLabel(stepLabels[i + 1]);
-                }
-            });
-
-            const totalSteps = $mainScrolls.length - 1;
-            let currentStep = 0;
+            const $cards = $section.find(".wg-service-2");
+            let current = 0;
             let isAnimating = false;
+
+            // Only the active card is visible; the others wait on the left.
+            // Only transform/opacity are animated so the transition stays smooth.
+            gsap.set($cards, { autoAlpha: 0, x: -80, pointerEvents: "none" });
+            gsap.set($cards.eq(0), { autoAlpha: 1, x: 0, pointerEvents: "auto" });
+            gsap.set($bg, { opacity: 0 });
+            gsap.set($bg.eq(0), { opacity: 1 });
+
+            // Four services share three backgrounds; extra cards reuse the last one.
+            const bgOf = (i) => Math.min(i, $bg.length - 1);
 
             // Services change only from the arrow button, never from scrolling.
             $section.off("click.serviceArrow").on("click.serviceArrow", ".wg-service-2 .action.tf-btn-2", () => {
-                if (isAnimating || totalSteps < 1) return;
+                if (isAnimating || $cards.length < 2) return;
                 isAnimating = true;
-                currentStep = (currentStep + 1) % $mainScrolls.length;
+                const from = current;
+                const to = (current + 1) % $cards.length;
+                current = to;
 
-                tl.tweenTo(stepLabels[currentStep], {
-                    duration: 1,
-                    ease: "power2.inOut",
-                    onComplete: () => {
-                        $mainScrolls.each(function (index, card) {
-                            $(card).css({
-                                opacity: index === currentStep ? 1 : 0,
-                                visibility: index === currentStep ? "visible" : "hidden",
-                                transform: index === currentStep ? "scale(1)" : "scale(0.95)",
-                                "pointer-events": index === currentStep ? "auto" : "none",
-                            });
-                        });
-                        isAnimating = false;
-                    },
-                });
+                // Always left -> right, including the jump from the last card back to the first:
+                // the old card leaves to the right, the next one enters from the left.
+                const move = gsap.timeline({ defaults: { ease: "power2.inOut" }, onComplete: () => { isAnimating = false; } });
+                move.set($cards.eq(from), { pointerEvents: "none" })
+                    .to($cards.eq(from), { autoAlpha: 0, x: 80, duration: 0.45 })
+                    .set($cards.eq(to), { x: -80, pointerEvents: "auto" })
+                    .to($cards.eq(to), { autoAlpha: 1, x: 0, duration: 0.55 }, ">-0.05");
+                if (bgOf(from) !== bgOf(to)) {
+                    move.to($bg.eq(bgOf(from)), { opacity: 0, duration: 0.8 }, 0)
+                        .to($bg.eq(bgOf(to)), { opacity: 1, duration: 0.8 }, 0);
+                }
             });
         };
 
         const destroyDesktop = () => {
             $section.off("click.serviceArrow");
-            if (tl) {
-                tl.kill();
-                tl = null;
-            }
-
-            ScrollTrigger.getAll().forEach((st) => {
-                if (st.trigger === $section[0]) {
-                    st.kill();
-                }
-            });
-
-            $section.find(".wg-service-2, .image-2").removeAttr("style");
-            $section.find(".wg-service-2").css({
-                opacity: "",
-                transform: "",
-                "pointer-events": "",
-            });
-            $section.find(".image-2").css({
-                opacity: "",
-                transform: "",
-                left: "",
-                width: "",
-                height: "",
-            });
-
+            gsap.killTweensOf($section.find(".wg-service-2, .bg-image"));
+            $section.find(".wg-service-2, .bg-image, .image-2").removeAttr("style");
             $section.removeAttr("style");
-            ScrollTrigger.refresh();
         };
 
         const checkAndInit = () => {
