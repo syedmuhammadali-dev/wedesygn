@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import CookieConsent from './components/CookieConsent'
+import { sectionPages } from './pages/sections'
 import loadingLogo from '../assets/images/logo/wedesygn-text.png'
 import '../assets/fonts/fonts.css'
 import '../assets/icon/icomoon/style.css'
@@ -21,6 +22,7 @@ const HomePage = lazy(() => import('./pages/HomePage'))
 // const BlogSinglePage = lazy(() => import('./pages/BlogSinglePage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
+const SectionPage = lazy(() => import('./pages/SectionPage'))
 
 function RouteLoading() {
   return (
@@ -37,6 +39,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          {sectionPages.map((page) => <Route key={page.path} path={page.path} element={<SectionPage {...page} />} />)}
           {/* <Route path="/landing" element={<LandingPage />} />
           <Route path="/blog-standard" element={<BlogStandardPage />} />
           <Route path="/blog-two-columns" element={<BlogTwoColumnsPage />} />

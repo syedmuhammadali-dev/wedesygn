@@ -59,6 +59,15 @@ try {
     path: '/privacy-policy',
   }).replace(emptyRoot, `<div id="root">${renderToString(createElement(PrivacyPolicyPage))}</div>`)
   writeFileSync(dist('privacy-policy.html'), privacy)
+
+  // Menu pages (portfolio, services, about us, contact), driven by src/pages/sections.ts
+  const { sectionPages } = await vite.ssrLoadModule('/src/pages/sections.ts')
+  const { default: SectionPage } = await vite.ssrLoadModule('/src/pages/SectionPage.tsx')
+  for (const page of sectionPages) {
+    const html = withMeta(shell, { title: page.title, description: page.description, path: page.path })
+      .replace(emptyRoot, `<div id="root">${renderToString(createElement(SectionPage, page))}</div>`)
+    writeFileSync(dist(page.file), html)
+  }
 } finally {
   await vite.close()
 }
@@ -71,4 +80,4 @@ writeFileSync(dist('404.html'), withMeta(shell, {
   robots: 'noindex, follow',
 }))
 
-console.log('Prerendered: index.html, privacy-policy.html, 404.html')
+console.log('Prerendered: index.html, privacy-policy.html, 404.html and menu pages')

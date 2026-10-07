@@ -58,3 +58,12 @@ body {
   .cookie-consent__actions { margin-top: 1rem; }
   .cookie-consent button { flex: 1; }
 }
+
+.section-page { min-height: 100vh; color: #fff; background: #050505; }
+.section-page__header { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.5rem; }
+.section-page__header img { display: block; }
+.section-page__header nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1.75rem; }
+.section-page__header nav a { color: rgba(255, 255, 255, 0.72); font-size: 0.8rem; letter-spacing: 0.08em; text-decoration: none; text-transform: uppercase; }
+.section-page__header nav a:hover, .section-page__header nav a[aria-current] { color: #FF3301; }
+.section-page__main { padding: 6rem 1.5rem; }
+.section-page h1 { margin: 0; font-size: clamp(3rem, 10vw, 9rem); line-height: 0.95; }
