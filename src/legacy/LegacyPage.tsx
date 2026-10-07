@@ -5,6 +5,7 @@ export type LegacyPageProps = {
   source: string
   title: string
   scripts: string[]
+  robots?: string
 }
 
 const aliases: Record<string, string> = {
@@ -198,7 +199,7 @@ function ContactFormBridge() {
   return null
 }
 
-export function LegacyPage({ source, title, scripts }: LegacyPageProps) {
+export function LegacyPage({ source, title, scripts, robots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' }: LegacyPageProps) {
   const navigate = useNavigate()
   const location = useLocation()
   const scriptsStarted = useRef(false)
@@ -206,22 +207,22 @@ export function LegacyPage({ source, title, scripts }: LegacyPageProps) {
 
   useEffect(() => {
     const path = aliases[location.pathname] ?? location.pathname
-    const description = path.startsWith('/blog-') ? 'Insights and ideas from wedesygn on design, development and digital experiences.' : 'wedesygn creates bold, functional digital experiences through strategy, design and development.'
+    const description = path.startsWith('/blog-') ? 'Insights and ideas from wedesygn on design, development and digital experiences.' : 'wedesygn is a digital design studio for brand identity, motion graphics & video, and fast, modern websites. Start your project with us today.'
     document.title = title
     setMeta('description', description)
     setMeta('author', 'wedesygn')
-    setMeta('robots', 'index, follow, max-image-preview:large')
+    setMeta('robots', robots)
     setMetaProperty('og:title', title)
     setMetaProperty('og:description', description)
     setMetaProperty('og:url', `https://wedesygn.com${path}`)
     setMetaProperty('og:type', path === '/blog-single' ? 'article' : 'website')
     setMetaProperty('og:site_name', 'wedesygn')
-    setMetaProperty('og:image', 'https://wedesygn.com/images/logo/logo-icon-red.png')
-    setMetaProperty('og:image:alt', 'wedesygn red and white logo')
+    setMetaProperty('og:image', 'https://wedesygn.com/images/logo/og-image.jpg')
+    setMetaProperty('og:image:alt', 'wedesygn - brand identity, motion and web design studio')
     setMeta('twitter:title', title)
     setMeta('twitter:description', description)
-    setMeta('twitter:image', 'https://wedesygn.com/images/logo/logo-icon-red.png')
-    setMeta('twitter:image:alt', 'wedesygn red and white logo')
+    setMeta('twitter:image', 'https://wedesygn.com/images/logo/og-image.jpg')
+    setMeta('twitter:image:alt', 'wedesygn - brand identity, motion and web design studio')
     setPageStructuredData(path, title, description)
     document.body.className = 'counter-scroll'
     let canonical = document.querySelector('link[rel="canonical"]')
@@ -256,7 +257,7 @@ export function LegacyPage({ source, title, scripts }: LegacyPageProps) {
       stopSlideAccessibility()
       if (startupRevealInterval) window.clearInterval(startupRevealInterval)
     }
-  }, [location.pathname, scripts, title])
+  }, [location.pathname, scripts, title, robots])
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const anchor = (event.target as HTMLElement).closest('a')
