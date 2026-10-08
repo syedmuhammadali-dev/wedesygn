@@ -152,7 +152,7 @@ function loadScript(file: string) {
   loadedScripts.add(file)
   return new Promise<void>((resolve) => {
     const script = document.createElement('script')
-    script.src = `/js/${file}`
+    script.src = `/js/${file}?v=${__BUILD_ID__}`
     script.onload = () => resolve()
     script.onerror = () => resolve()
     document.body.appendChild(script)
