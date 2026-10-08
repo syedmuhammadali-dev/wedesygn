@@ -188,7 +188,7 @@ function ContactFormBridge() {
         const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, interestedIn: selects[0], budgetInUsd: selects[1], projectDetails }) })
         const result = await response.json()
         if (!response.ok) throw new Error(result.error || 'Unable to send message')
-        status.textContent = 'Thanks — your message has been received.'
+        status.textContent = result.notificationSent === false ? 'Thanks — your details are saved. If you do not hear from us soon, please email hello@wedesygn.com.' : 'Thanks — your message has been received.'
         form.reset()
       } catch (error) { status.textContent = error instanceof Error ? error.message : 'Unable to send message.' }
       finally { button?.removeAttribute('disabled') }
